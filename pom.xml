@@ -8,5 +8,9 @@
     <artifactId>FinalFS</artifactId>
     <version>1.0.0</version>
 
+    <modules>
+        <module>fs-mongo</module>
+    </modules>
+
 
 </project>

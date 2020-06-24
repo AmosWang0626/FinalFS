@@ -1,35 +1,34 @@
 version: '3.5'
 services:
-  # fs-mongo
-  fs-mongo:
+  fs_svc:
     build: .
     image: amos0626/fs-mongo
     container_name: fs_mongo
     ports:
       - '8080:8080'
     volumes:
-      - './logs:/root/logs'
+      - './logs:/logs'
     environment:
       - MAX_FILE_SIZE=16MB
       - MAX_REQUEST_SIZE=64MB
       - APP_LOG_LEVEL=info
-      - MONGODB_URI=mongodb://base-mongo/final_fs
-      # - MONGODB_URI=mongodb://amos:amos_123@base-mongo/final_fs
+      # 局限性: 通过 mongo environment 配置的账号密码只能应用到 admin 数据库
+      - MONGODB_URI=mongodb://amos:amos_pwd@mongo_svc/admin
     depends_on:
-      - base-mongo
+      - mongo_svc
     networks:
       - mongo-net
 
-  # base-mongo
-  base-mongo:
+  # https://hub.docker.com/_/mongo
+  mongo_svc:
     image: mongo
     restart: always
-    container_name: base_mongo
+    container_name: mongo
     ports:
       - 27017:27017
-    # environment:
-    #   MONGO_INITDB_ROOT_USERNAME: amos
-    #   MONGO_INITDB_ROOT_PASSWORD: amos_123
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: amos
+      MONGO_INITDB_ROOT_PASSWORD: amos_pwd
     networks:
       - mongo-net
 
