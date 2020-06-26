@@ -23,6 +23,14 @@ public interface MongoFsService {
     void upload(MultipartFile[] files);
 
     /**
+     * 上传
+     *
+     * @param files 文件
+     * @return 文件ID
+     */
+    String upload(MultipartFile files);
+
+    /**
      * 根据文件ID获取唯一文件
      *
      * @param id 文件ID

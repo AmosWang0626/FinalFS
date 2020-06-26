@@ -11,6 +11,8 @@ import com.mongodb.client.gridfs.model.GridFSFile;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsCriteria;
@@ -39,6 +41,9 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 @Service("mongoFileService")
 public class MongoFsServiceImpl implements MongoFsService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MongoFsServiceImpl.class);
+
+
     @Resource
     private GridFsTemplate gridFsTemplate;
     private static final ThreadLocal<DateFormat> YEAR_2_SECOND_FORMAT =
@@ -50,31 +55,42 @@ public class MongoFsServiceImpl implements MongoFsService {
             return;
         }
 
+        List<String> objectIds = new ArrayList<>();
         for (MultipartFile file : files) {
-            if (file.isEmpty()) {
-                continue;
-            }
-
-            // 文件原始名字
-            String originalFilename = file.getOriginalFilename();
-            String extension = FilenameUtils.getExtension(originalFilename);
-            // 新的文件名字
-            String filename = System.currentTimeMillis() + "." + extension;
-            // 文件类型 (适配不支持类型)
-            AtomicReference<String> contentType = new AtomicReference<>(file.getContentType());
-            ExtensionUtils.fixContentType(extension).ifPresent(contentType::set);
-
-            Document document = new Document()
-                    .append(MongoFsConstant.FILENAME, originalFilename)
-                    .append(MongoFsConstant.CONTENT_TYPE, contentType.get())
-                    .append(MongoFsConstant.FILE_TYPE, FileTypeEnum.getFileType(originalFilename));
-
-            try {
-                gridFsTemplate.store(file.getInputStream(), filename, contentType.get(), document);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            String objectId = upload(file);
+            objectIds.add(objectId);
         }
+
+        LOGGER.info("upload finish. ids: [{}]", objectIds);
+    }
+
+    @Override
+    public String upload(MultipartFile file) {
+        if (file.isEmpty()) {
+            return null;
+        }
+
+        // 文件原始名字
+        String originalFilename = file.getOriginalFilename();
+        String extension = FilenameUtils.getExtension(originalFilename);
+        // 新的文件名字
+        String filename = System.currentTimeMillis() + "." + extension;
+        // 文件类型 (适配不支持类型)
+        AtomicReference<String> contentType = new AtomicReference<>(file.getContentType());
+        ExtensionUtils.fixContentType(extension).ifPresent(contentType::set);
+
+        Document document = new Document()
+                .append(MongoFsConstant.FILENAME, originalFilename)
+                .append(MongoFsConstant.CONTENT_TYPE, contentType.get())
+                .append(MongoFsConstant.FILE_TYPE, FileTypeEnum.getFileType(originalFilename));
+
+        try {
+            return gridFsTemplate.store(file.getInputStream(), filename, contentType.get(), document).toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     @Override

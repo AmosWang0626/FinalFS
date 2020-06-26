@@ -21,7 +21,7 @@ public class ExtensionUtils {
 
     private static final String[] VIDEO_ARRAY = new String[]{"mp4", "avi", "wma", "rmvb", "rm", "flash", "mid", "3gp", "wmv"};
     private static final String[] IMAGE_ARRAY = new String[]{"jpg", "jpeg", "png", "gif", "ico", "bmp"};
-    private static final String[] AUDIO_ARRAY = new String[]{"mp3", "wav", "ogg", "m4a"};
+    private static final String[] AUDIO_ARRAY = new String[]{"mp3", "wav", "ogg", "m4a", "flac"};
     private static final String[] OFFICE_ARRAY = new String[]{"doc", "docx", "xls", "xlsx", "ppt", "pptx"};
     private static final String[] DOCUMENT_ARRAY = new String[]{"doc", "docx", "xls", "xlsx", "ppt", "pptx", "md", "pdf", "txt"};
 
