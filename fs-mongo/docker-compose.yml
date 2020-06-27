@@ -7,7 +7,7 @@ services:
     ports:
       - '8080:8080'
     volumes:
-      - './logs:/logs'
+      - './logs:/app/logs'
     environment:
       - MAX_FILE_SIZE=16MB
       - MAX_REQUEST_SIZE=64MB
