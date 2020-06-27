@@ -1,6 +1,7 @@
 package com.amos.fs.mongo.model.form;
 
 import com.amos.fs.mongo.common.enums.FileTypeEnum;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -11,13 +12,11 @@ import lombok.Data;
  */
 @Data
 public class MongoFsForm {
-    /**
-     * 文件名字
-     */
+
+    @ApiModelProperty("文件名字")
     private String realName;
-    /**
-     * 文件类型
-     */
+
+    @ApiModelProperty("文件类型")
     private FileTypeEnum fileTypeEnum;
 
 }

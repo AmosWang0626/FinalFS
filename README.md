@@ -1,11 +1,13 @@
-# FinalFS 在线文件管理系统
+# FinalFS
 ![FinalFS](doc/FinalFS.png)
+
+### 作为一个可拔插的组件，提供文件上传、文件读取功能。支持在线对文件进行管理。
 
 ---
 
 ## 模块 —— `fs-mongo`
 
-- 核心功能使用 Mongo GridFS 实现
+- 基于 Mongo GridFS 实现
 
 - 已实现功能
   - 文件上传（含批量上传）
@@ -13,64 +15,19 @@
   - 文件读取（自动适配ContentType）
   - 文件删除
 
+- 首页 [http://localhost:8080](http://localhost:8080)
+- Swagger [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+
+- Docker镜像 [amos0626/fs-mongo](https://hub.docker.com/r/amos0626/fs-mongo)
+    - [Dockerfile](fs-mongo/Dockerfile)
+    - 与mongo编排，可参考 [docker-compose.yml](fs-mongo/docker-compose.yml)
+
 - 效果图
 
   ![Index](doc/mongo_index.png)
 
----
-
-
-## 附录
-- spring boot 2.3 设置 `favicon.ico`
-
-  将要设置的图标替换 `resources/public/favicon.ico` 即可
-
-- 设置[自定义控制台输出](http://patorjk.com/software/taag/)
-
-  将要设置的内容写入 `resources/banner.txt` 即可
-
+  ![Swagger](doc/swagger_ui.png)
 
 ---
-### Windows 安装 MongoDB
-- 下载安装包，傻瓜式安装
-https://www.mongodb.com/try/download/community
 
-- 进入安装目录下的 bin 目录
-
-- 启动
-  > 注意是 mongod，不是 mongo
-   - 执行命令：`mongod -dbpath E:\app_res\mongodb\data`
-   - 必须加上 `--dbpath`
-   - [启动脚本](doc/mongo_start.bat)
-
-- 测试启动
-    - http://localhost:27017/
-
-- 查看操作命令
-    - 执行命令：`mongo`
-    - 查看帮助：`help`
-
----
-[好玩的网站](http://patorjk.com/)
-```
-                     ..._  ,-'``; 
-                   ,`     \`-----'.. 
-                   ,\          .~ ` - . 
-                  ,'               o    |__ 
-                _|                        (#) 
-              _\  '`~-.                   ,' 
-             ,\   ,.-~-.' -.,       .'--~` 
-            /   /         }   ` -..,/ 
-          /  ,'___    :/           \ 
-        /'`-.|      `'-..'........      \ 
-      ;      \                   )-....| 
-     |         ' ---...........-'      ,' 
-     ',    ,......                   ,' 
-       ' ,/        `,              ,' 
-         \           \       ,.- ' 
-          ',          ',-~'`  ;                ,======, 
-           |          ;      /__            ,' -------  ', 
-          /          /__        )            \ ======== / 
-          '-.             )----~'             \________/ 
-             ' - .......-``
-```
+[附录](doc/others.md)

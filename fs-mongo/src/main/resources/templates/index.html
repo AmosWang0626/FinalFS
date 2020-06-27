@@ -21,7 +21,7 @@
             xhr.onload = function () {
                 let res = JSON.parse(xhr.response);
                 if (res.code === '1000') {
-                    alert(res.message);
+                    // alert(res.message);
                     window.location.reload()
                 }
             };
@@ -96,23 +96,27 @@
 <div>
     <!-- 页面头部 -->
     <div class="title_box">
-        <img class="icon" th:src="@{FinalFS.png}">
+        <img class="icon" th:src="@{FinalFS.png}" alt="FinalFS">
         <!-- 筛选条件 -->
         <div class="filter_box">
-            <form action="/mongo" method="get" enctype="application/x-www-form-urlencoded">
-                <input type="text" name="realName" th:value="*{realName}" placeholder="请输入文件名字" autofocus>
-                <select name="fileTypeEnum">
-                    <option value="">全部</option>
-                    <option th:each="item : ${fileTypeEnums}" th:value="${item}"
-                            th:text="${item.name}" th:selected="${item eq fileTypeEnum}">
-                    </option>
-                </select>
+            <form action="/" method="get" enctype="application/x-www-form-urlencoded">
+                <label>
+                    <input type="text" name="realName" th:value="*{realName}" placeholder="请输入文件名字" autofocus>
+                </label>
+                <label>
+                    <select name="fileTypeEnum">
+                        <option value="">全部</option>
+                        <option th:each="item : ${fileTypeEnums}" th:value="${item}"
+                                th:text="${item.name}" th:selected="${item eq fileTypeEnum}">
+                        </option>
+                    </select>
+                </label>
                 <input type="submit" value="搜索">
             </form>
         </div>
         <!-- 上传文件 -->
         <div class="upload_box">
-            <form action="/mongo/upload" method="post" enctype="multipart/form-data">
+            <form action="/upload" method="post" enctype="multipart/form-data">
                 <input type="file" name="files" multiple>
                 <input type="submit" value="上传">
             </form>
