@@ -2,6 +2,7 @@ package com.amos.fs.mongo.web;
 
 import com.amos.fs.mongo.common.constant.MongoFsConstant;
 import com.amos.fs.mongo.common.enums.FileTypeEnum;
+import com.amos.fs.mongo.common.response.GeneralResponse;
 import com.amos.fs.mongo.model.form.MongoFsForm;
 import com.amos.fs.mongo.service.MongoFsService;
 import com.mongodb.client.gridfs.GridFSBucket;
@@ -55,7 +56,7 @@ public class MongoFsController {
     }
 
     /**
-     * 文件上传
+     * 批量文件上传
      *
      * @param files 批量文件上传
      * @return 重定向到 index页面
@@ -65,6 +66,23 @@ public class MongoFsController {
         mongoFsService.upload(files);
 
         return "redirect:/mongo";
+    }
+
+    /**
+     * 单文件上传
+     *
+     * @param file 单文件上传
+     * @return 上传状态
+     */
+    @ResponseBody
+    @PostMapping("uploadOne")
+    public GeneralResponse<String> uploadOne(MultipartFile file) {
+        String objectId = mongoFsService.upload(file);
+        if (objectId == null) {
+            return GeneralResponse.ofFailure();
+        }
+
+        return GeneralResponse.ofSuccess();
     }
 
     /**
@@ -93,13 +111,14 @@ public class MongoFsController {
      * 删除文件
      *
      * @param id 文件ID
-     * @return index页面
+     * @return 删除状态
      */
+    @ResponseBody
     @DeleteMapping(value = "delete/{id}")
-    public ModelAndView deleteById(@PathVariable String id) {
+    public GeneralResponse<String> deleteById(@PathVariable String id) {
         mongoFsService.deleteById(id);
 
-        return index(null);
+        return GeneralResponse.ofSuccess();
     }
 
 }

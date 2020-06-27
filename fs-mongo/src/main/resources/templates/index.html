@@ -11,11 +11,19 @@
 
         /* 根据文件ID 删除文件 */
         function deleteById(id) {
+            if (confirm('确认删除吗？') === false) {
+                return
+            }
+
             let xhr = new XMLHttpRequest();
             xhr.open("delete", "/mongo/delete/" + id);
             xhr.send();
             xhr.onload = function () {
-                window.location.reload()
+                let res = JSON.parse(xhr.response);
+                if (res.code === '1000') {
+                    alert(res.message);
+                    window.location.reload()
+                }
             };
             xhr.onerror = function () {
                 alert("error: " + xhr.status)
