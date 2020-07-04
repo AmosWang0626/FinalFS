@@ -30,5 +30,8 @@ build/
 ### VS Code ###
 .vscode/
 
+### FinalFS ###
+DATA
+
 ### fs-mongo ###
 logs

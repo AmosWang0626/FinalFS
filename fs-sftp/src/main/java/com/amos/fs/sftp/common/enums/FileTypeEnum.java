@@ -1,7 +1,6 @@
-package com.amos.fs.mongo.common.enums;
+package com.amos.fs.sftp.common.enums;
 
-
-import com.amos.fs.mongo.common.util.ExtensionUtils;
+import com.amos.fs.sftp.common.util.FileExtensionUtils;
 
 /**
  * DESCRIPTION: 文件类型枚举
@@ -32,17 +31,28 @@ public enum FileTypeEnum {
      */
     public static String getFileType(String filename) {
         FileTypeEnum fileTypeEnum = OTHER;
-        if (ExtensionUtils.isVideo(filename)) {
+        if (FileExtensionUtils.isVideo(filename)) {
             fileTypeEnum = VIDEO;
-        } else if (ExtensionUtils.isAudio(filename)) {
+        } else if (FileExtensionUtils.isAudio(filename)) {
             fileTypeEnum = AUDIO;
-        } else if (ExtensionUtils.isImage(filename)) {
+        } else if (FileExtensionUtils.isImage(filename)) {
             fileTypeEnum = IMAGE;
-        } else if (ExtensionUtils.isDocument(filename)) {
+        } else if (FileExtensionUtils.isDocument(filename)) {
             fileTypeEnum = DOCUMENT;
         }
 
         return fileTypeEnum.name();
+    }
+
+    /**
+     * 根据文件名获取文件要存放的文件夹
+     *
+     * @param filename 文件名
+     * @return 要存放的文件夹
+     */
+    public static String getUploadDir(String filename) {
+
+        return getFileType(filename).toLowerCase();
     }
 
     public String getName() {

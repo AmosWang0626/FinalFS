@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>File</title>
+    <script>
+        function change() {
+            const event = arguments.callee.caller.arguments[0];
+            if (event.keyCode === 13) {
+                const searchPath = document.getElementById("search");
+                window.open("/?path=" + searchPath.value, "_self")
+            }
+        }
+
+        function audio(filename) {
+            let commonAudio = document.getElementById("commonAudio");
+            commonAudio.src = "/read?filename=" + filename;
+            commonAudio.play();
+        }
+
+        function preview(filename) {
+            window.open("/read?filename=" + filename)
+        }
+
+        /*function upload(file) {
+            let xhr = new XMLHttpRequest();
+            xhr.open("post", "/upload");
+            xhr.send(file);
+            xhr.onload = function () {
+                alert("上传成功!")
+            };
+            xhr.onerror = function () {
+                alert("error: " + xhr.status)
+            };
+        }*/
+    </script>
+    <style>
+        table th, tr {
+            width: 20%;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <h3>当前文件夹：<span th:text="${data.path}"></span></h3>
+    <h3>
+        <label for="search">切换文件夹：</label>
+        <input id="search" th:value="${data.relativePath}" type="text" onkeydown="change()"/>
+    </h3>
+    <table>
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>文件名</th>
+            <th>文件类型</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="row,rowStat : ${data.fileNames}">
+            <td th:text="${rowStat.count}">1</td>
+            <td th:text="${row}">info</td>
+            <td th:text="${row.contains('.') ? '文件' : '文件夹'}">type</td>
+            <td>
+                <a th:href="@{/(path=${row})}" th:if="!${row.contains('.')}">打开</a>
+                <a href="javascript:void(0)" th:onclick="audio([[${row}]]);"
+                   th:if="${row.matches('.+(.mp3|.wav|.ogg|.m4a)$')}">播放</a>
+                <a href="javascript:void(0)" th:onclick="preview([[${row}]]);"
+                   th:if="${row.matches('.+(.jpg|.jpeg|.png|.gif|.ico|.bmp|.pdf|.md)$')}">新窗口打开</a>
+                <a th:href="@{/read(download=1,filename=${row})}" th:if="${row.contains('.')}">下载</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <!-- 播放音频 -->
+    <div style="margin: 20px">
+        <div style="width: 340px; padding: 10px; text-align: center; border: gray dashed 1px">
+            <audio id="commonAudio" controls autoplay preload="none">
+                <source src="/read?filename=">
+            </audio>
+        </div>
+    </div>
+    <!-- 上传文件 -->
+    <div style="margin: 20px">
+        <div style="width: 340px; padding: 10px; text-align: center; border: gray dashed 1px">
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <input type="file" name="file">
+                <input type="submit" value="上传">
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

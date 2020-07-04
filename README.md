@@ -28,6 +28,18 @@
 
   ![Swagger](doc/swagger_ui.png)
 
+
+## 模块 —— `fs-sftp`
+
+- 基于 sftp & commons-pool2 实现
+
+- 已实现功能
+  - 文件上传
+  - 文件查询
+  - 文件读取
+
+- 文件上传、读取功能还是推荐使用 `fs-mongo`
+
 ---
 
 [附录](doc/others.md)
