@@ -20,7 +20,7 @@
         <java.version>1.8</java.version>
         <skipTests>true</skipTests>
         <!-- dependency version -->
-        <swagger.version>2.10.5</swagger.version>
+        <swagger.version>3.0.0</swagger.version>
         <commons-io.version>2.4</commons-io.version>
         <commons-lang3.version>3.10</commons-lang3.version>
     </properties>
@@ -56,17 +56,7 @@
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${swagger.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${swagger.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-spring-webmvc</artifactId>
+            <artifactId>springfox-boot-starter</artifactId>
             <version>${swagger.version}</version>
         </dependency>
         <dependency>
