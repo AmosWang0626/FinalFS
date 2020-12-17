@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>fs-minio</module>
         <module>fs-mongo</module>
         <module>fs-sftp</module>
     </modules>
