@@ -2,67 +2,43 @@
 
 ![FinalFS](doc/FinalFS.png)
 
-### 作为一个可拔插的组件，提供文件上传、文件读取功能。支持在线对文件进行管理。
+> 项目中用到了文件管理，选了几个业界流行的方案，实践一下。
 
 ---
 
-## 模块划分
+## 三种方案
 
-- fs-minio
-- fs-mongo
-- fs-sftp
-
----
-
-## 模块 -- `fs-minio`
-
-> 先推荐了，简洁明了
-
-### 部署
-
-#### Windows
-
-- `minio server E:\study\minio\workspace`
+- sftp
+- mongo
+- minio
 
 ---
 
-## 模块 —— `fs-mongo`
+## 概述
 
-> 硬伤，不适合小文件 >16MB
+### 1. fs-sftp
 
-- 基于 Mongo GridFS 实现
+> 项目中原有的方案，聊胜于无，较原始
 
-- 已实现功能
-    - 文件上传（含批量上传）
-    - 文件检索（文件名字、自定义文件类型）
-    - 文件读取（自动适配ContentType）
-    - 文件删除
+基于 sftp & commons-pool2 实现。
 
-- 首页 [http://localhost:8080](http://localhost:8080)
-- Swagger [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+**实现的功能**：文件上传、文件查询、文件读取
 
-- Docker镜像 [amos0626/fs-mongo](https://hub.docker.com/r/amos0626/fs-mongo)
-    - [Dockerfile](fs-mongo/Dockerfile)
-    - 与mongo编排，可参考 [docker-compose.yml](fs-mongo/docker-compose.yml)
+### 2. fs-mongo
 
-- 效果图
+> 实用性强，但是不适合存放大量小文件（也就是16MB以下的文件）
 
-  ![Index](doc/mongo_index.png)
+使用 Mongo GridFS 实现。详细说明：[doc/mongo](doc/mongo)
 
-  ![Swagger](doc/swagger_ui.png)
+**实现的功能**：文件上传、文件检索、文件读取、文件删除
 
----
+### 3. fs-minio
 
-## 模块 —— `fs-sftp`
+> 最终的技术选型，Minio 简单好用，权限管理比较方便
 
-- 基于 sftp & commons-pool2 实现
+fs-minio 模块，运用 Minio 实现。详细说明：[doc/minio](doc/minio)
 
-- 已实现功能
-    - 文件上传
-    - 文件查询
-    - 文件读取
-
-- 文件上传、读取功能还是推荐使用 `fs-mongo`
+**实现的功能**：文件上传、文件读取、创建bucket、设置bucket公共读权限、批量删除、查找指定bucket、查看bucket下所有文件
 
 ---
 
