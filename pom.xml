@@ -10,10 +10,46 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>fs-api</module>
         <module>fs-minio</module>
         <module>fs-mongo</module>
         <module>fs-sftp</module>
     </modules>
+
+    <properties>
+        <spring-boot.version>2.4.0</spring-boot.version>
+        <amos-common.version>1.0.0-SNAPSHOT</amos-common.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.amos</groupId>
+                <artifactId>fs-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- common Begin -->
+            <!-- https://github.com/AmosWang0626/common -->
+            <dependency>
+                <groupId>com.amos</groupId>
+                <artifactId>common-dto</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amos</groupId>
+                <artifactId>common-util</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+            <!-- common End -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
