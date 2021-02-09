@@ -16,7 +16,7 @@ import java.util.Set;
  * @author <a href="mailto:daoyuan0626@gmail.com">amos.wang</a>
  * @date 2020/12/22
  */
-@Service("fileService")
+@Service("minioFileService")
 public class MinioFileServiceImpl extends BaseMinioFileService {
 
     public static final String DOC_BUCKET_PREFIX = "doc-bucket-";

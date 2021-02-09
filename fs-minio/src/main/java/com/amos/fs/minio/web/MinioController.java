@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 public class MinioController {
 
     @Resource
-    private MinioFileService minioUploadFile;
+    private MinioFileService minioFileService;
 
 
     @PostMapping("upload")
@@ -30,7 +30,7 @@ public class MinioController {
             return "上传的文件不能为空";
         }
 
-        return minioUploadFile.uploadFile(file);
+        return minioFileService.uploadFile(file);
     }
 
 }
