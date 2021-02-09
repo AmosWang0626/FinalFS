@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>FinalFS</title>
+    <style>
+        /* title */
+        .title_box {
+            margin: 10px 0 10px 0;
+            display: inline-block;
+        }
+
+        .upload_box {
+            float: left;
+            width: 310px;
+            padding: 10px;
+            text-align: center;
+            border: gray dashed 1px
+        }
+    </style>
+</head>
+<body>
+<div>
+    <!-- 页面头部 -->
+    <div class="title_box">
+        <!-- 上传文件 -->
+        <div class="upload_box">
+            <form action="/minio/upload" method="post" enctype="multipart/form-data">
+                <input type="file" name="file">
+                <input type="submit" value="上传">
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

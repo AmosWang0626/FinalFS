@@ -1,19 +1,42 @@
 # FinalFS
+
 ![FinalFS](doc/FinalFS.png)
 
 ### 作为一个可拔插的组件，提供文件上传、文件读取功能。支持在线对文件进行管理。
 
 ---
 
+## 模块划分
+
+- fs-minio
+- fs-mongo
+- fs-sftp
+
+---
+
+## 模块 -- `fs-minio`
+
+> 先推荐了，简洁明了
+
+### 部署
+
+#### Windows
+
+- `minio server E:\study\minio\workspace`
+
+---
+
 ## 模块 —— `fs-mongo`
+
+> 硬伤，不适合小文件 >16MB
 
 - 基于 Mongo GridFS 实现
 
 - 已实现功能
-  - 文件上传（含批量上传）
-  - 文件检索（文件名字、自定义文件类型）
-  - 文件读取（自动适配ContentType）
-  - 文件删除
+    - 文件上传（含批量上传）
+    - 文件检索（文件名字、自定义文件类型）
+    - 文件读取（自动适配ContentType）
+    - 文件删除
 
 - 首页 [http://localhost:8080](http://localhost:8080)
 - Swagger [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
@@ -28,15 +51,16 @@
 
   ![Swagger](doc/swagger_ui.png)
 
+---
 
 ## 模块 —— `fs-sftp`
 
 - 基于 sftp & commons-pool2 实现
 
 - 已实现功能
-  - 文件上传
-  - 文件查询
-  - 文件读取
+    - 文件上传
+    - 文件查询
+    - 文件读取
 
 - 文件上传、读取功能还是推荐使用 `fs-mongo`
 
