@@ -53,7 +53,7 @@ public class IndexController {
     @ApiIgnore
     @PostMapping("upload")
     public String upload(MultipartFile[] files) {
-        mongoFsService.upload(files);
+        mongoFsService.uploadFile(files);
 
         return "redirect:";
     }

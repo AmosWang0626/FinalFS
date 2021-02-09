@@ -1,5 +1,7 @@
 package com.amos.fs.mongo.service.impl;
 
+import com.amos.common.util.date.DateUtils;
+import com.amos.fs.api.exception.FsException;
 import com.amos.fs.mongo.common.constant.MongoFsConstant;
 import com.amos.fs.mongo.common.enums.FileTypeEnum;
 import com.amos.fs.mongo.common.util.ExtensionUtils;
@@ -7,25 +9,26 @@ import com.amos.fs.mongo.model.form.MongoFsForm;
 import com.amos.fs.mongo.model.vo.MongoFsVO;
 import com.amos.fs.mongo.service.MongoFsService;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.gridfs.GridFSBucket;
+import com.mongodb.client.gridfs.GridFSBuckets;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.Document;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsCriteria;
+import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -41,35 +44,13 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 @Service("mongoFileService")
 public class MongoFsServiceImpl implements MongoFsService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MongoFsServiceImpl.class);
-
-
     @Resource
     private GridFsTemplate gridFsTemplate;
-    private static final ThreadLocal<DateFormat> YEAR_2_SECOND_FORMAT =
-            ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+    @Resource
+    private MongoDatabaseFactory mongoDatabaseFactory;
 
     @Override
-    public void upload(MultipartFile[] files) {
-        if (files.length == 0) {
-            return;
-        }
-
-        List<String> objectIds = new ArrayList<>();
-        for (MultipartFile file : files) {
-            String objectId = upload(file);
-            objectIds.add(objectId);
-        }
-
-        LOGGER.info("upload finish. ids: [{}]", objectIds);
-    }
-
-    @Override
-    public String upload(MultipartFile file) {
-        if (file.isEmpty()) {
-            return null;
-        }
-
+    public String uploadFile(MultipartFile file) {
         // 文件原始名字
         String originalFilename = file.getOriginalFilename();
         String extension = FilenameUtils.getExtension(originalFilename);
@@ -94,13 +75,16 @@ public class MongoFsServiceImpl implements MongoFsService {
     }
 
     @Override
-    public GridFSFile findById(String id) {
-        return gridFsTemplate.findOne(query(where("_id").is(id)));
-    }
+    public GridFsResource findById(String id) {
+        GridFSFile gridFsFile = gridFsTemplate.findOne(query(where("_id").is(id)));
+        /// 根据 filename 查找：query(GridFsCriteria.whereFilename().is(filename))
+        if (Objects.isNull(gridFsFile)) {
+            throw new FsException("文件不存在");
+        }
 
-    @Override
-    public GridFSFile findByFilename(String filename) {
-        return gridFsTemplate.findOne(query(GridFsCriteria.whereFilename().is(filename)));
+        GridFSBucket bucket = GridFSBuckets.create(mongoDatabaseFactory.getMongoDatabase());
+
+        return new GridFsResource(gridFsFile, bucket.openDownloadStream(gridFsFile.getObjectId()));
     }
 
     @Override
@@ -124,7 +108,7 @@ public class MongoFsServiceImpl implements MongoFsService {
             MongoFsVO mongoFsVO = new MongoFsVO()
                     .setId(gridFsFile.getObjectId().toString())
                     .setFilename(gridFsFile.getFilename())
-                    .setUploadDate(YEAR_2_SECOND_FORMAT.get().format(gridFsFile.getUploadDate()));
+                    .setUploadDate(DateUtils.getDateTime(gridFsFile.getUploadDate()));
 
             // 附加信息
             Optional.ofNullable(gridFsFile.getMetadata()).ifPresent(document -> {

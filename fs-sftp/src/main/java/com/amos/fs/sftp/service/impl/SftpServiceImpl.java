@@ -1,20 +1,25 @@
 package com.amos.fs.sftp.service.impl;
 
+import com.amos.fs.api.exception.FsException;
 import com.amos.fs.sftp.common.base.pool.exception.PoolException;
 import com.amos.fs.sftp.common.base.sftp.adapter.SftpPoolAdapter;
 import com.amos.fs.sftp.common.base.sftp.core.SftpConnection;
 import com.amos.fs.sftp.common.constant.PathConst;
+import com.amos.fs.sftp.common.enums.FileTypeEnum;
 import com.amos.fs.sftp.common.util.PathUtils;
+import com.amos.fs.sftp.config.FsSftpConfig;
 import com.amos.fs.sftp.service.SftpService;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.*;
@@ -34,22 +39,30 @@ public class SftpServiceImpl implements SftpService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SftpServiceImpl.class);
 
     @Resource
+    private FsSftpConfig fsSftpConfig;
+    @Resource
     private SftpPoolAdapter sftpPoolAdapter;
 
-    /**
-     * 文件上传
-     */
-    @Override
-    public void upload(File file, String path, String fileName) throws SftpException, FileNotFoundException {
-        upload(new FileInputStream(file), path, fileName);
-    }
 
-    /**
-     * 文件上传
-     */
     @Override
-    public void upload(byte[] data, String path, String fileName) throws SftpException {
-        upload(new ByteArrayInputStream(data), path, fileName);
+    public String uploadFile(MultipartFile file) {
+        String dir = fsSftpConfig.getBaseDir();
+        String originalFilename = file.getOriginalFilename();
+        // file final dir
+        String uploadDir = FileTypeEnum.getUploadDir(originalFilename);
+        String path = PathUtils.endWithSlash(dir) + uploadDir;
+        // reset file name
+        String extension = FilenameUtils.getExtension(originalFilename);
+        String filename = System.currentTimeMillis() + "." + extension;
+
+        try {
+            upload(new ByteArrayInputStream(file.getBytes()), path, filename);
+        } catch (SftpException | IOException e) {
+            e.printStackTrace();
+            throw new FsException("上传失败 !");
+        }
+
+        return path + PathConst.DIR_SPLIT + filename;
     }
 
     /**
@@ -58,7 +71,7 @@ public class SftpServiceImpl implements SftpService {
      * @throws SftpException SftpException
      */
     @Override
-    public void read(String path, File saveFile) throws SftpException {
+    public void download(String path, File saveFile) throws SftpException {
         path = PathUtils.replaceBackslash(path);
 
         SftpConnection sc = null;
@@ -98,28 +111,20 @@ public class SftpServiceImpl implements SftpService {
      * @throws SftpException SftpException
      */
     @Override
-    public byte[] read(String path) throws SftpException {
+    public InputStream getFileInputStream(String path) throws SftpException {
         path = PathUtils.replaceBackslash(path);
 
         SftpConnection sc = null;
-        InputStream inputStream = null;
         try {
             sc = sftpPoolAdapter.getResource();
             ChannelSftp channel = sc.getChannelSftp();
-            inputStream = channel.get(path);
 
-            // inputStream.available() 正常读取没问题，但
-            byte[] bytes = new byte[inputStream.available()];
-            int read = inputStream.read(bytes);
-            LOGGER.info("读取字节数[{}]", read);
-
-            return bytes;
+            return channel.get(path);
         } catch (SftpException e) {
             throw new SftpException(ChannelSftp.SSH_FX_FAILURE, "", e);
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
-            IOUtils.closeQuietly(inputStream);
             sftpPoolAdapter.returnResource(sc);
         }
     }

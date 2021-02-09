@@ -1,7 +1,7 @@
 package com.amos.fs.minio.service.impl;
 
 import com.amos.common.util.date.DateUtils;
-import com.amos.fs.minio.service.BaseFileService;
+import com.amos.fs.minio.service.BaseMinioFileService;
 import io.minio.MinioClient;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ import java.util.Set;
  * @date 2020/12/22
  */
 @Service("fileService")
-public class FileServiceImpl extends BaseFileService {
+public class MinioFileServiceImpl extends BaseMinioFileService {
 
     public static final String DOC_BUCKET_PREFIX = "doc-bucket-";
 

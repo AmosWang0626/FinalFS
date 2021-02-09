@@ -9,7 +9,6 @@ import com.amos.fs.sftp.model.vo.FileLsVO;
 import com.amos.fs.sftp.service.SftpService;
 import com.jcraft.jsch.SftpException;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.http.HttpHeaders;
@@ -23,7 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import java.io.File;
-import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLEncoder;
 
 /**
@@ -40,6 +39,7 @@ public class SftpController {
     private SftpService sftpService;
     @Resource
     private FsSftpConfig fsSftpConfig;
+
 
     @GetMapping
     public ModelAndView index(String path) {
@@ -61,19 +61,12 @@ public class SftpController {
     }
 
     @PostMapping("upload")
-    public ModelAndView upload(MultipartFile file) throws IOException, SftpException {
+    public ModelAndView upload(MultipartFile file) {
         if (file == null) {
             return index(null);
         }
-        String dir = fsSftpConfig.getBaseDir();
-        String originalFilename = file.getOriginalFilename();
-        // file final dir
-        String uploadDir = FileTypeEnum.getUploadDir(originalFilename);
-        String path = PathUtils.endWithSlash(dir) + uploadDir;
-        // reset file name
-        String extension = FilenameUtils.getExtension(originalFilename);
-        String filename = System.currentTimeMillis() + "." + extension;
-        sftpService.upload(file.getBytes(), path, filename);
+
+        sftpService.uploadFile(file);
 
         return index(null);
     }
@@ -110,7 +103,7 @@ public class SftpController {
         // 远程文件地址
         String originPath = PathUtils.endWithSlash(dir) +
                 FileTypeEnum.getUploadDir(filename) + PathConst.DIR_SPLIT + filename;
-        sftpService.read(originPath, file);
+        sftpService.download(originPath, file);
 
         return new ResponseEntity<>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
     }
@@ -132,7 +125,11 @@ public class SftpController {
         String originPath = PathUtils.endWithSlash(dir) +
                 FileTypeEnum.getUploadDir(filename) + PathConst.DIR_SPLIT + filename;
 
-        return new ResponseEntity<>(sftpService.read(originPath), headers, HttpStatus.OK);
+        InputStream inputStream = sftpService.getFileInputStream(originPath);
+        byte[] bytes = new byte[inputStream.available()];
+        int read = inputStream.read(bytes);
+
+        return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
     }
 
 }

@@ -1,11 +1,12 @@
 package com.amos.fs.sftp.service;
 
+import com.amos.fs.api.service.FileService;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Vector;
 
@@ -15,54 +16,25 @@ import java.util.Vector;
  * @author <a href="mailto:daoyuan0626@gmail.com">amos.wang</a>
  * @date 2020/6/4
  */
-public interface SftpService {
+public interface SftpService extends FileService {
 
     /**
-     * 上传 --- File方式上传
-     *
-     * @param file     文件
-     * @param path     上传路径
-     * @param fileName 文件名
-     * @throws SftpException         SftpException
-     * @throws FileNotFoundException 文件不存在
-     */
-    void upload(File file, String path, String fileName) throws SftpException, FileNotFoundException;
-
-    /**
-     * 上传 --- byte[]方式上传
-     *
-     * @param data     byte[]
-     * @param path     上传路径
-     * @param fileName 文件名字
-     * @throws SftpException SftpException
-     */
-    void upload(byte[] data, String path, String fileName) throws SftpException;
-
-    /**
-     * 下载 --- 下载到指定文件
-     *
-     * @param path     远程文件路径
-     * @param saveFile 下载到指定文件
-     * @throws SftpException SftpException
-     */
-    void read(String path, File saveFile) throws SftpException;
-
-    /**
-     * 下载 --- 获取文件流
+     * 获取文件流
      *
      * @param path 文件路径
      * @return InputStream
      * @throws SftpException SftpException
      */
-    byte[] read(String path) throws SftpException;
+    InputStream getFileInputStream(String path) throws SftpException;
 
     /**
-     * 创建文件夹
+     * 下载到指定文件
      *
-     * @param path 路径
+     * @param path     远程文件路径
+     * @param saveFile 下载到指定文件
      * @throws SftpException SftpException
      */
-    void mkdir(String path) throws SftpException;
+    void download(String path, File saveFile) throws SftpException;
 
     /**
      * 删除文件
@@ -71,6 +43,14 @@ public interface SftpService {
      * @throws SftpException SftpException
      */
     void delete(String path) throws SftpException;
+
+    /**
+     * 创建文件夹
+     *
+     * @param path 路径
+     * @throws SftpException SftpException
+     */
+    void mkdir(String path) throws SftpException;
 
     /**
      * 移动文件

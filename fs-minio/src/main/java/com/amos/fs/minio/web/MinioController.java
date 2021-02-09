@@ -1,9 +1,10 @@
 package com.amos.fs.minio.web;
 
-import com.amos.fs.minio.config.MinioProperties;
-import com.amos.fs.minio.service.UploadFileService;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import com.amos.fs.minio.service.MinioFileService;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -20,16 +21,8 @@ import javax.annotation.Resource;
 public class MinioController {
 
     @Resource
-    private MinioProperties minioProperties;
-    @Resource
-    private UploadFileService minioUploadFile;
+    private MinioFileService minioUploadFile;
 
-
-    @GetMapping
-    public String minioConfig() {
-
-        return minioProperties.toString();
-    }
 
     @PostMapping("upload")
     public String upload(@RequestParam("file") MultipartFile file) {
@@ -38,15 +31,6 @@ public class MinioController {
         }
 
         return minioUploadFile.uploadFile(file);
-    }
-
-    @GetMapping("getBucketPolicy/{bucketName}")
-    public String getBucketPolicy(@PathVariable("bucketName") String bucketName) {
-        if (StringUtils.isBlank(bucketName)) {
-            return "Bucket name not blank";
-        }
-
-        return minioUploadFile.getBucketPolicy(bucketName);
     }
 
 }

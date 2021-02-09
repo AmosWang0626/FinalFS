@@ -26,9 +26,9 @@ import java.util.stream.Collectors;
  * @author amos
  * @date 2020/12/27
  */
-public abstract class BaseFileService implements FileService {
+public abstract class BaseMinioFileService implements MinioFileService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BaseFileService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseMinioFileService.class);
 
     /**
      * 获取 bucketName 可独立实现重复性校验
@@ -73,7 +73,8 @@ public abstract class BaseFileService implements FileService {
         return bucketName + "/" + file.getOriginalFilename();
     }
 
-    public int deleteFilesByBucket(String bucketName, List<String> objectNameList) {
+    @Override
+    public int batchDelete(String bucketName, List<String> objectNameList) {
         if (CollectionUtils.isEmpty(objectNameList)) {
             return 0;
         }

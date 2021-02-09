@@ -1,9 +1,9 @@
 package com.amos.fs.mongo.service;
 
+import com.amos.fs.api.service.FileService;
 import com.amos.fs.mongo.model.form.MongoFsForm;
 import com.amos.fs.mongo.model.vo.MongoFsVO;
-import com.mongodb.client.gridfs.model.GridFSFile;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.mongodb.gridfs.GridFsResource;
 
 import java.util.List;
 
@@ -13,22 +13,7 @@ import java.util.List;
  * @author <a href="mailto:daoyuan0626@gmail.com">amos.wang</a>
  * @date 2020/6/19
  */
-public interface MongoFsService {
-
-    /**
-     * 上传
-     *
-     * @param files 文件
-     */
-    void upload(MultipartFile[] files);
-
-    /**
-     * 上传
-     *
-     * @param files 文件
-     * @return 文件ID
-     */
-    String upload(MultipartFile files);
+public interface MongoFsService extends FileService {
 
     /**
      * 根据文件ID获取唯一文件
@@ -36,15 +21,7 @@ public interface MongoFsService {
      * @param id 文件ID
      * @return file
      */
-    GridFSFile findById(String id);
-
-    /**
-     * 根据名字获取唯一文件
-     *
-     * @param filename 文件名字
-     * @return file
-     */
-    GridFSFile findByFilename(String filename);
+    GridFsResource findById(String id);
 
     /**
      * 根据名字获取文件集合

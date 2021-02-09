@@ -1,6 +1,6 @@
 package com.amos.fs.minio.service;
 
-import org.springframework.web.multipart.MultipartFile;
+import com.amos.fs.api.service.FileService;
 
 import java.io.InputStream;
 import java.util.List;
@@ -11,24 +11,7 @@ import java.util.List;
  * @author <a href="mailto:daoyuan0626@gmail.com">amos.wang</a>
  * @date 2020/12/22
  */
-public interface FileService {
-
-    /**
-     * 上传文件
-     *
-     * @param file 文件
-     * @return 文件访问URL
-     */
-    String uploadFile(MultipartFile file);
-
-    /**
-     * 文件是否存在
-     *
-     * @param bucketName bucket name
-     * @param objectName object name
-     * @return true-存在；false-不存在
-     */
-    boolean existFile(String bucketName, String objectName);
+public interface MinioFileService extends FileService {
 
     /**
      * 获取文件流
@@ -38,6 +21,24 @@ public interface FileService {
      * @return InputStream 可能为空
      */
     InputStream getFileInputStream(String bucketName, String objectName);
+
+    /**
+     * 批量删除
+     *
+     * @param bucketName     bucket name
+     * @param objectNameList object name list
+     * @return 删除数量
+     */
+    int batchDelete(String bucketName, List<String> objectNameList);
+
+    /**
+     * 文件是否存在
+     *
+     * @param bucketName bucket name
+     * @param objectName object name
+     * @return true-存在；false-不存在
+     */
+    boolean existFile(String bucketName, String objectName);
 
     /**
      * 获取包含指定名字的所有 BucketName

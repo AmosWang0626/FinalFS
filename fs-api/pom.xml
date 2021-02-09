@@ -21,6 +21,11 @@
             <groupId>com.amos</groupId>
             <artifactId>common-dto</artifactId>
         </dependency>
+        <!-- because MultipartFile -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
