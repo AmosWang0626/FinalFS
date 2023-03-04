@@ -16,7 +16,7 @@
         <!-- dependency version -->
         <swagger.version>3.0.0</swagger.version>
         <minio.version>8.0.3</minio.version>
-        <commons-io.version>2.4</commons-io.version>
+        <commons-io.version>2.7</commons-io.version>
         <commons-lang3.version>3.10</commons-lang3.version>
     </properties>
 
